@@ -83,6 +83,7 @@ public class POL {
         for(countObjectInArrCarInfo = 0; matcher.find(); countObjectInArrCarInfo++){
             arrCarInfo[countObjectInArrCarInfo] = matcher.group();
         }
+        /* Выводим общую информацию по расходам ГСМ */
         getInformationPOL(arrCarInfo);
     }
 
@@ -113,19 +114,24 @@ public class POL {
                 return errorMessage;
         }
 
-        Matcher matcher = pattern != null ? pattern.matcher(carInfo) : null;
+        Matcher matcher = pattern.matcher(carInfo);
         int matcherCount = 0;
-        while(matcher.find()){
-            matcherCount++;
-            if(matcherCount > 1 && attribute == ATTRIBUTE.OTHER_PARAM){
-                return matcher.group(1);
-            }else if(attribute != ATTRIBUTE.OTHER_PARAM) {
-                return matcher.group(1);
+        if (!matcher.find()) {
+            return errorMessage;
+        }else{
+            while (attribute == POL.ATTRIBUTE.OTHER_PARAM){
+                if (matcherCount > 1) {
+                    return matcher.group(1);
+                }
+                ++matcherCount;
             }
+            return matcher.group(1);
         }
-        return errorMessage;
     }
-
+    /**
+     * Вывод общей информации по расходам ГСМ на каждый вид авто.
+     * Вывод класса авто с минимальным и максимальным расходом на ГСМ.
+     * @param arrCar входной массив значений со всеми авто */
     private static void getInformationPOL(String[] arrCar){
 
         /* Расходы ГСМ на каждую машину. Первый индекс - класс авто, второй индекс - номер машины*/
@@ -142,13 +148,13 @@ public class POL {
         double[] arrCostCarType = new double[FUEL.values().length];
 
         /* Мин. и макс. значение расхода ГСМ по классу авто */
-        double minCarTypeCost = 0, maxCarTypeCost = 0,temp = 0;
+        double minCarTypeCost, maxCarTypeCost;
 
-        /* Заполняем высчитываем расходы на ГСМ каждой машины */
+        /* Расходы на ГСМ каждой машины */
         for (String car : arrCar){
             arrCarConsumption[Byte.parseByte(getAttribute(ATTRIBUTE.CODE_CAR, car).substring(0,1))-1] [Byte.parseByte(getAttribute(ATTRIBUTE.NUMBER,car))-1] += FUEL.valueOf("C"+getAttribute(ATTRIBUTE.CODE_CAR,car)).getFuelConsumption() * Integer.parseInt(getAttribute(ATTRIBUTE.MILEAGE,car));
         }
-
+        /* Расходы на ГСМ на каждый вид авто */
         for (int carType = 0; carType < arrCarConsumption.length; carType++) {
             costCarType = 0;
             for (double cost : arrCarConsumption[carType]){
@@ -156,12 +162,15 @@ public class POL {
             }
             sumCostPOL += costCarType;
             arrCostCarType[carType] = costCarType;
-
-            if(costCarType < minCarTypeCost)
-                minCarTypeCost = costCarType;
-
-            if(costCarType > maxCarTypeCost)
-                maxCarTypeCost = minCarTypeCost;
+        }
+        /* Находим мин. и макс. сумму трат на ГСМ среди авто */
+        minCarTypeCost = arrCostCarType.length != 0 ? arrCostCarType[0] : 0;
+        maxCarTypeCost = arrCostCarType.length != 0 ? arrCostCarType[0] : 0;
+        for (double cost : arrCostCarType){
+            if(cost > maxCarTypeCost)
+                maxCarTypeCost = cost;
+            if(cost < minCarTypeCost)
+                minCarTypeCost = cost;
         }
 
         System.out.println("Общая стоимость расходов на ГСМ: " + sumCostPOL);
