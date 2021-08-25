@@ -1,5 +1,7 @@
 package firstExercise;
 
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
+
 import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -21,14 +23,16 @@ public class POL {
     /** Другие параметры */
     OTHER_PARAM
   }
-
+  /** Перечисление видов машин с информацией о расходе и стомости топлива за 1 л. */
   enum FUEL {
     C100(12.5, 46.10),
     C200(12, 48.90),
     C300(11.5, 47.5),
     C400(20, 48.9);
 
+    /** Расход топлива */
     double consumption;
+    /** Стоимость топлива за 1 л. */
     double price;
 
     FUEL(double consumption, double price) {
@@ -72,6 +76,7 @@ public class POL {
     System.out.println(
         "(100 - легковой авто, 200 - грузовой авто, 300 - пассажирский транспорт, 400 - тяжелая техника)");
 
+    // Вывод отсортированной информации по типу машины
     getSortInformationTypeCar(scan.nextLine(), arrCarInfo);
     scan.close();
   }
@@ -92,7 +97,7 @@ public class POL {
         {
           pattern = Pattern.compile("[A-Z]([0-9]+)");
           break; // .toMatchResult().map(MatchResult::group).findFirst().get().split("C")[1]; --for
-                 // Java 9+
+          // Java 9+
         }
       case NUMBER:
         {
@@ -102,9 +107,13 @@ public class POL {
           break;
         }
       case MILEAGE:
-      case OTHER_PARAM:
         {
           pattern = Pattern.compile("-([0-9]+)");
+          break;
+        }
+      case OTHER_PARAM:
+        {
+          pattern = Pattern.compile("-([0-9]+)$");
           break; // .matcher(carInfo).results().map(MatchResult::group).findFirst().get().split("-")[1]; -- for Java 9+
         }
       default:
@@ -116,7 +125,7 @@ public class POL {
     if (!matcher.find()) {
       return errorMessage;
     } else {
-      while (attribute == POL.ATTRIBUTE.OTHER_PARAM) {
+      while (attribute == ATTRIBUTE.OTHER_PARAM) {
         if (matcherCount > 1) {
           return matcher.group(1);
         }
@@ -198,40 +207,105 @@ public class POL {
   }
 
   private static void getSortInformationTypeCar(String typeCar, String[] arrCar) {
+    // счетчик вхождения строк с данными о машине по типу машины
     int carCount = 0;
+    // считаем кол-во вхождений строк с данными о машине по типу машины
     for (String car : arrCar) {
       if (getAttribute(ATTRIBUTE.CODE_CAR, car).equals(typeCar)) carCount++;
     }
-    String[] arrCarSort = new String[carCount];
+    // Массив для хранения данных о машинах
+    String[] arrCarInfo = new String[carCount];
     for (int i = 0, j = 0; i < arrCar.length; i++) {
+      // проверяем, что тип машины из входящего массива arrCar совпадает с выбранным нами типом
+      // машины typeCar
       if (getAttribute(ATTRIBUTE.CODE_CAR, arrCar[i]).equals(typeCar)) {
-        for (int carIndex = 0; carIndex < arrCarSort.length; carIndex++) {
+        // Проходимся по массиву данных с копированной информацией о машинах arrCarInfo
+        for (int carIndex = 0; carIndex < arrCarInfo.length; carIndex++) {
+          // если номер машины во входящем массиве совпадает с номером машины в массиве arrCarInfo,
+          // то мы суммируем данные по пробегу
           if (getAttribute(ATTRIBUTE.NUMBER, arrCar[i])
-              .equals(getAttribute(ATTRIBUTE.NUMBER, arrCarSort[carIndex]))) {
-            arrCarSort[carIndex] =
-                arrCarSort[carIndex].replaceFirst(
+              .equals(getAttribute(ATTRIBUTE.NUMBER, arrCarInfo[carIndex]))) {
+            arrCarInfo[carIndex] =
+                arrCarInfo[carIndex].replaceFirst(
                     "-[0-9]+",
                     "-"
                         + (Integer.parseInt(getAttribute(ATTRIBUTE.MILEAGE, arrCar[i]))
                             + Integer.parseInt(
-                                getAttribute(ATTRIBUTE.MILEAGE, arrCarSort[carIndex]))));
+                                getAttribute(ATTRIBUTE.MILEAGE, arrCarInfo[carIndex]))));
+            // Если у машины есть доп параметр, его информация также суммируется
             if (!getAttribute(ATTRIBUTE.OTHER_PARAM, arrCar[i]).equals("null")) {
-              arrCarSort[carIndex] =
-                  arrCarSort[carIndex].replaceFirst(
-                      "(-[0-9]+)$",
+              arrCarInfo[carIndex] =
+                  arrCarInfo[carIndex].replaceFirst(
+                      "-[0-9]+$",
                       "-"
                           + (Integer.parseInt(getAttribute(ATTRIBUTE.OTHER_PARAM, arrCar[i]))
                               + Integer.parseInt(
-                                  getAttribute(ATTRIBUTE.OTHER_PARAM, arrCarSort[carIndex]))));
+                                  getAttribute(ATTRIBUTE.OTHER_PARAM, arrCarInfo[carIndex]))));
+              break;
             }
-            break;
           } else {
-            arrCarSort[j] = arrCar[i];
+            // если данной машины нет в массиве arrCarInfo - то добавляем
+            arrCarInfo[j] = arrCar[i];
+            break;
           }
         }
         j++;
       }
     }
-    System.out.println(Arrays.toString(arrCarSort));
+    // Счетчик кол-ва машин
+    carCount = 0;
+    // считаем кол-во машин в массиве
+    for (String car : arrCarInfo) {
+      if (car != null) carCount++;
+    }
+    // Объявляем массив для хранения отсортированных данных
+    String[] arrCarSortInfo = new String[carCount];
+    // пересоздаем массив, для корректной сортировки
+    for (int i = 0; arrCarInfo[i] != null; i++) {
+      arrCarSortInfo[i] = arrCarInfo[i];
+    }
+    // Пузырьковая сортировка по возрастанию
+    optimizedBubbleSort(arrCarSortInfo);
+    System.out.println(
+        "Отсортированный массив с данными по машинам (пузырькова сортировка по пробегу (по возрастанию)): ");
+    // Выводим информацию по машинам
+    for (String car : arrCarSortInfo) {
+      String otherParam =
+          !getAttribute(ATTRIBUTE.OTHER_PARAM, car).equals("null")
+              ? getAttribute(ATTRIBUTE.OTHER_PARAM, car)
+              : "Отсутствует";
+      System.out.println(
+          new StringBuilder()
+              .append("\n------------------------------------------------\n")
+              .append("Тип авто: ")
+              .append("C" + getAttribute(ATTRIBUTE.CODE_CAR, car) + "\n")
+              .append("Гос. номер авто: ")
+              .append(getAttribute(ATTRIBUTE.NUMBER, car) + "\n")
+              .append("Пробег авто: ")
+              .append(getAttribute(ATTRIBUTE.MILEAGE, car) + "\n")
+              .append("Доп параметр: " + otherParam + "\n")
+              .append("------------------------------------------------"));
+    }
+  }
+
+  private static void optimizedBubbleSort(String[] arr) {
+    int i = 0, n = arr.length;
+
+    boolean swapNeeded = true;
+    while (i < n - 1 && swapNeeded) {
+      swapNeeded = false;
+      for (int j = 1; j < n - i; j++) {
+        if (Integer.parseInt(getAttribute(ATTRIBUTE.MILEAGE, arr[j - 1]))
+            > Integer.parseInt(getAttribute(ATTRIBUTE.MILEAGE, arr[j]))) {
+
+          String temp = arr[j - 1];
+          arr[j - 1] = arr[j];
+          arr[j] = temp;
+          swapNeeded = true;
+        }
+      }
+      if (!swapNeeded) break;
+      i++;
+    }
   }
 }
