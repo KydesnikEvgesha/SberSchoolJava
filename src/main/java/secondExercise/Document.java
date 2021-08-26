@@ -3,7 +3,10 @@ package secondExercise;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class Document<E extends Enum<E>> {
+/**
+ *
+ */
+public abstract class Document {
 
   /** Номер документа */
   private String number;
@@ -11,8 +14,8 @@ public abstract class Document<E extends Enum<E>> {
   /** Название документа */
   private String title;
 
-  /** Статус документа {@link E} */
-  protected E status;
+  /** Статус документа {@link Status} */
+  protected Status status;
 
   /** Создаем документ, номер присваивается через Random, название пустое */
   public Document() {
@@ -36,7 +39,7 @@ public abstract class Document<E extends Enum<E>> {
    * @param number номер документа
    * @param title название документа
    */
-  public Document(String number, String title, E status) {
+  public Document(String number, String title, Status status) {
     this.number = number;
     this.title = title;
     this.status = status;
@@ -62,16 +65,16 @@ public abstract class Document<E extends Enum<E>> {
   }
 
   /** Получить текущий статус документа */
-  public E getStatus() {
+  public Status getStatus() {
     return status;
   }
 
   /**
    * Присвоить документу статус
    *
-   * @param status статус {@link E}
+   * @param status статус {@link Status}
    */
-  abstract void setStatus(E status);
+  abstract void setStatus(Status status);
 
   @Override
   public boolean equals(Object o) {

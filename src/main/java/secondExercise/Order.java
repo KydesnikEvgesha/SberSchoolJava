@@ -2,7 +2,7 @@ package secondExercise;
 
 import java.util.Objects;
 
-public class Order extends Document<OrderStatus> {
+public class Order extends Document {
 
   /** Сотрудник {@link Employee#Employee()} */
   private Employee employee;
@@ -55,8 +55,10 @@ public class Order extends Document<OrderStatus> {
    * @param title Название приказа
    * @param employee Сотрудник
    * @param orderType Тип приказа
-   * @param reason Основание приказа {@link Document#Document(String, String, Enum)} {@link
-   *     Employee} {@link OrderType}
+   * @param reason Основание приказа
+   * {@link Document#Document(String, String, Status)}
+   * {@link Employee}
+   * {@link OrderType}
    */
   public Order(
           String number, String title, Employee employee, OrderType orderType, String reason) {
@@ -121,9 +123,10 @@ public class Order extends Document<OrderStatus> {
 
   /** Установить статус приказа исполнено {@link OrderStatus#EXECUTED} */
   @Override
-  public void setStatus(OrderStatus status) {
+  public void setStatus(Status status) {
     if (this.status != OrderStatus.EXECUTED) this.status = status;
   }
+
 
   @Override
   public boolean equals(Object o) {

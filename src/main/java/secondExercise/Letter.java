@@ -5,10 +5,10 @@ import java.util.Objects;
 public class Letter extends Document {
 
   /** От кого письмо */
-  String fromDest;
+  String author;
 
   /** Кому письмо */
-  String toDest;
+  String recipient;
 
   /** Создаем пустой документ типа письмо */
   public Letter() {
@@ -29,13 +29,13 @@ public class Letter extends Document {
    * Создаем письмо с указанием названия, от кого письмо, кому письмо
    *
    * @param title название
-   * @param fromDest от кого
-   * @param toDest кому
+   * @param author от кого
+   * @param recipient кому
    */
-  public Letter(String title, String fromDest, String toDest) {
+  public Letter(String title, String author, String recipient) {
     super(title);
-    this.fromDest = fromDest;
-    this.toDest = toDest;
+    this.author = author;
+    this.recipient = recipient;
   }
 
   /**
@@ -43,45 +43,45 @@ public class Letter extends Document {
    *
    * @param number номер документа
    * @param title название документа
-   * @param fromDest от кого письмо
-   * @param toDest кому письмо
+   * @param author от кого письмо
+   * @param recipient кому письмо
    */
-  public Letter(String number, String title, String fromDest, String toDest) {
+  public Letter(String number, String title, String author, String recipient) {
     super(number, title, null);
-    this.fromDest = fromDest;
-    this.toDest = toDest;
+    this.author = author;
+    this.recipient = recipient;
   }
 
   /** Получить отправителя письма */
-  public String getFromDest() {
-    return fromDest;
+  public String getAuthor() {
+    return author;
   }
 
   /**
    * Указать отправителя письма
    *
-   * @param fromDest отправитель письма
+   * @param author отправитель письма
    */
-  public void setFromDest(String fromDest) {
-    this.fromDest = fromDest;
+  public void setAuthor(String author) {
+    this.author = author;
   }
 
   /** Получить получателя письма */
-  public String getToDest() {
-    return toDest;
+  public String getRecipient() {
+    return recipient;
   }
 
   /**
    * Указать получателя письма
    *
-   * @param toDest получатель письма
+   * @param recipient получатель письма
    */
-  public void setToDest(String toDest) {
-    this.toDest = toDest;
+  public void setRecipient(String recipient) {
+    this.recipient = recipient;
   }
 
   @Override
-  void setStatus(Enum status) {}
+  void setStatus(Status status) {}
 
   @Override
   public boolean equals(Object o) {
@@ -89,12 +89,12 @@ public class Letter extends Document {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Letter letter = (Letter) o;
-    return Objects.equals(fromDest, letter.fromDest) && Objects.equals(toDest, letter.toDest);
+    return Objects.equals(author, letter.author) && Objects.equals(recipient, letter.recipient);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), fromDest, toDest);
+    return Objects.hash(super.hashCode(), author, recipient);
   }
 
   @Override
@@ -107,10 +107,10 @@ public class Letter extends Document {
         + super.getTitle()
         + '\''
         + ", от кого ='"
-        + fromDest
+        + author
         + '\''
         + ", кому ='"
-        + toDest
+        + recipient
         + '\'';
   }
 
