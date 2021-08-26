@@ -1,10 +1,10 @@
 package secondExercise;
 
 /**
- * Перечисление типа приказа {@link ORDER_TYPE#ACCEPTANCE Прием} {@link ORDER_TYPE#DISMISSAL
+ * Перечисление типа приказа {@link OrderType#ACCEPTANCE Прием} {@link OrderType#DISMISSAL
  * Увольнение}
  */
-public enum ORDER_TYPE implements ENUM_STAT {
+public enum OrderType implements Status {
   /** Прием */
   ACCEPTANCE("ПРИЕМ"),
   /** Увольнение */
@@ -16,7 +16,7 @@ public enum ORDER_TYPE implements ENUM_STAT {
     return name;
   }
 
-  ORDER_TYPE(String name) {
+  OrderType(String name) {
     this.name = name;
   }
 }

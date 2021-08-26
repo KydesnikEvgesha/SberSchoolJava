@@ -24,7 +24,7 @@ public class Main {
                 + employee.getLastName()
                 + " в штат компании на должность: "
                 + employee.getPosition(),
-            ORDER_TYPE.ACCEPTANCE);
+            OrderType.ACCEPTANCE);
     // создаем документ об увольнении сотрудника с автоматической генерацией номера документа
     Document orderDiss =
         new Order(
@@ -35,7 +35,7 @@ public class Main {
                 + employee.getLastName()
                 + " из штата компании с должности: "
                 + employee.getPosition(),
-            ORDER_TYPE.DISMISSAL,
+            OrderType.DISMISSAL,
             "По собственному желанию");
     // Коллекция для хранения документов
     ArrayList<Document> documents = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Main {
     // Выводим информацию по документам и меняем статус у документов
     for (Document doc : documents) {
       System.out.println(!isSimple ? doc : doc.printSimple());
-      if (doc instanceof Order) doc.setStatus(ORDER_STATUS.EXECUTED);
+      if (doc instanceof Order) doc.setStatus(OrderStatus.EXECUTED);
     }
     System.out.println("_____________________________________________________________");
     // убеждаемся, что статус у документов изменился

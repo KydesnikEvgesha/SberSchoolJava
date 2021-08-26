@@ -2,7 +2,7 @@ package secondExercise;
 
 import java.util.Objects;
 
-public class Order extends Document<ORDER_STATUS> {
+public class Order extends Document<OrderStatus> {
 
   /** Сотрудник {@link Employee#Employee()} */
   private Employee employee;
@@ -13,21 +13,21 @@ public class Order extends Document<ORDER_STATUS> {
   /** Основание */
   private String reason;
 
-  /** Тип приказа {@link ORDER_TYPE} */
-  private ORDER_TYPE orderType;
+  /** Тип приказа {@link OrderType} */
+  private OrderType orderType;
 
   /**
    * Создаем приказ с указанием сотрудника, текста приказа и тип приказа
    *
    * @param employee Сотрудник
    * @param text Текст приказа
-   * @param orderType Тип приказа {@link Document#Document()} {@link ORDER_TYPE}
+   * @param orderType Тип приказа {@link Document#Document()} {@link OrderType}
    */
-  public Order(Employee employee, String text, ORDER_TYPE orderType) {
+  public Order(Employee employee, String text, OrderType orderType) {
     super();
     this.employee = employee;
     this.text = text;
-    setStatus(ORDER_STATUS.CREATED);
+    setStatus(OrderStatus.CREATED);
     this.orderType = orderType;
     this.reason = "";
   }
@@ -37,13 +37,13 @@ public class Order extends Document<ORDER_STATUS> {
    *
    * @param employee Сотрудник
    * @param text Текст приказа
-   * @param orderType Тип приказа {@link Document#Document()} {@link ORDER_TYPE}
+   * @param orderType Тип приказа {@link Document#Document()} {@link OrderType}
    */
-  public Order(Employee employee, String text, ORDER_TYPE orderType, String reason) {
+  public Order(Employee employee, String text, OrderType orderType, String reason) {
     super();
     this.employee = employee;
     this.text = text;
-    setStatus(ORDER_STATUS.CREATED);
+    setStatus(OrderStatus.CREATED);
     this.orderType = orderType;
     this.reason = reason;
   }
@@ -56,11 +56,11 @@ public class Order extends Document<ORDER_STATUS> {
    * @param employee Сотрудник
    * @param orderType Тип приказа
    * @param reason Основание приказа {@link Document#Document(String, String, Enum)} {@link
-   *     Employee} {@link ORDER_TYPE}
+   *     Employee} {@link OrderType}
    */
   public Order(
-      String number, String title, Employee employee, ORDER_TYPE orderType, String reason) {
-    super(number, title, ORDER_STATUS.CREATED);
+          String number, String title, Employee employee, OrderType orderType, String reason) {
+    super(number, title, OrderStatus.CREATED);
     this.text = "";
     this.employee = employee;
     this.orderType = orderType;
@@ -75,10 +75,10 @@ public class Order extends Document<ORDER_STATUS> {
    * @param title Название приказа
    * @param employee Сотрудник
    * @param text Текст приказа
-   * @param orderType Тип приказа {@link Document} {@link Employee} {@link ORDER_TYPE}
+   * @param orderType Тип приказа {@link Document} {@link Employee} {@link OrderType}
    */
-  public Order(String number, String title, Employee employee, String text, ORDER_TYPE orderType) {
-    super(number, title, ORDER_STATUS.CREATED);
+  public Order(String number, String title, Employee employee, String text, OrderType orderType) {
+    super(number, title, OrderStatus.CREATED);
     this.employee = employee;
     this.text = text;
     this.orderType = orderType;
@@ -115,14 +115,14 @@ public class Order extends Document<ORDER_STATUS> {
   }
 
   /** Получить тип приказа */
-  public ORDER_TYPE getOrderType() {
+  public OrderType getOrderType() {
     return orderType;
   }
 
-  /** Установить статус приказа исполнено {@link ORDER_STATUS#EXECUTED} */
+  /** Установить статус приказа исполнено {@link OrderStatus#EXECUTED} */
   @Override
-  public void setStatus(ORDER_STATUS status) {
-    if (this.status != ORDER_STATUS.EXECUTED) this.status = status;
+  public void setStatus(OrderStatus status) {
+    if (this.status != OrderStatus.EXECUTED) this.status = status;
   }
 
   @Override
@@ -151,7 +151,7 @@ public class Order extends Document<ORDER_STATUS> {
     sb.append(", Текст приказа='").append(text).append('\'');
     sb.append(", Статус приказа=").append(super.getStatus().getName());
     sb.append(", Тип приказа=").append(orderType.getName());
-    if (orderType == ORDER_TYPE.DISMISSAL)
+    if (orderType == OrderType.DISMISSAL)
       sb.append(" ,Причина увольнения='").append(reason).append('\'');
     return sb.toString();
   }

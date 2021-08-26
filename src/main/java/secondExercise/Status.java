@@ -1,5 +1,5 @@
 package secondExercise;
 
-public interface ENUM_STAT<E> {
+public interface Status<E> {
     E getName();
 }

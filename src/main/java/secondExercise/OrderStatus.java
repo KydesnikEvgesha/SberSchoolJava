@@ -1,9 +1,9 @@
 package secondExercise;
 
 /**
- * Перечисление статусов {@link ORDER_STATUS#CREATED Создан} {@link ORDER_STATUS#EXECUTED Исполнен}
+ * Перечисление статусов {@link OrderStatus#CREATED Создан} {@link OrderStatus#EXECUTED Исполнен}
  */
-public enum ORDER_STATUS implements ENUM_STAT {
+public enum OrderStatus implements Status {
 
   /** Создан */
   CREATED("СОЗДАН"),
@@ -16,7 +16,7 @@ public enum ORDER_STATUS implements ENUM_STAT {
     return name;
   }
 
-  ORDER_STATUS(String name) {
+  OrderStatus(String name) {
     this.name = name;
   }
 }
