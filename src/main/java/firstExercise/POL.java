@@ -1,52 +1,18 @@
 package firstExercise;
 
-import java.util.Scanner;
+import firstExercise.util.Transports;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class POL {
-  /**
-   * Список аттрибутов машины {@link #CODE_CAR} {@link #NUMBER} {@link #MILEAGE} {@link
-   * #OTHER_PARAM}
-   */
-  enum ATTRIBUTE {
-    /** Тип машины */
-    CODE_CAR,
-    /** Гос. номер машины */
-    NUMBER,
-    /** Пробег */
-    MILEAGE,
-    /** Другие параметры */
-    OTHER_PARAM
-  }
-  /** Перечисление видов машин с информацией о расходе и стомости топлива за 1 л. */
-  enum FUEL {
-    C100(12.5, 46.10),
-    C200(12, 48.90),
-    C300(11.5, 47.5),
-    C400(20, 48.9);
-
-    /** Расход топлива */
-    double consumption;
-    /** Стоимость топлива за 1 л. */
-    double price;
-
-    FUEL(double consumption, double price) {
-      this.consumption = consumption;
-      this.price = price;
-    }
-
-    /** Получаем стоимость 1 км. пути */
-    public double getFuelConsumption() {
-      return (consumption * price) / 100;
-    }
-  }
-
   static String inputLine =
       "{\"C100_1-100\", \"C200_1-120-1200\", \"C300_1-120-30\", \"C400_1-80-20\", \"C100_2-50\", \"C200_2-40-1000\", \"C300_2-200-45\", \"C400_2-10-20\", \"C100_3-10\", \"C200_3-170-1100\", \"C300_3-150-29\", \"C400_3-100-28\", \"C100_1-300\", \"C200_1-100-750\", \"C300_1-32-15\"}\n";
 
   public static void main(String[] args) {
     // Initialize variable
+    List<Transport> transportList = new ArrayList<>();
     Scanner scan = new Scanner(System.in);
     System.out.println(
         "Введите входные данные, либо нажмите Enter, чтобы продолжить \n(автоматически подставится строка с массивом данных)");
@@ -54,16 +20,21 @@ public class POL {
     Pattern pattern = Pattern.compile("[A-Z][0-9]+_[0-9](-[0-9]+)+");
     Matcher matcher = pattern.matcher(inputString);
 
-    int countObjectInArrCarInfo = 0; // (int) matcher.results().count(); --for Java 9+
-    while (matcher.find()) {
-      countObjectInArrCarInfo++;
-    }
-    matcher.reset();
-    String[] arrCarInfo =
-        new String
-            [countObjectInArrCarInfo]; // matcher.results().map(MatchResult::group).toArray(String[]::new); --for Java 9+
-    for (countObjectInArrCarInfo = 0; matcher.find(); countObjectInArrCarInfo++) {
-      arrCarInfo[countObjectInArrCarInfo] = matcher.group();
+//    int countObjectInArrCarInfo = 0; // (int) matcher.results().count(); --for Java 9+
+//    while (matcher.find()) {
+//      countObjectInArrCarInfo++;
+//    }
+//    matcher.reset();
+//    String[] arrCarInfo =
+//        new String
+//            [countObjectInArrCarInfo]; // matcher.results().map(MatchResult::group).toArray(String[]::new); --for Java 9+
+    while(matcher.find()) {
+      transportList.add(new Transport(
+              Integer.parseInt(Transports.getAttribute(Attribute.CODE_CAR, matcher.group())),
+              Integer.parseInt(Transports.getAttribute(Attribute.NUMBER, matcher.group())),
+              Integer.parseInt(Transports.getAttribute(Attribute.MILEAGE, matcher.group())),
+              Integer.parseInt(Transports.getAttribute(Attribute.OTHER_PARAM, matcher.group()))
+      ));
     }
     /* Выводим общую информацию по расходам ГСМ */
     getInformationPOL(arrCarInfo);
@@ -78,69 +49,15 @@ public class POL {
   }
 
   /**
-   * Получаем значение аттрибута машины в строковом литерале
-   *
-   * @param attribute требуемый аттрибут машины {@link ATTRIBUTE}
-   * @param carInfo входная строка с данными о машине
-   * @return значение аттрибута
-   */
-  private static String getAttribute(ATTRIBUTE attribute, String carInfo) {
-    if (carInfo == null) return "";
-    Pattern pattern;
-    String errorMessage = "null";
-    switch (attribute) {
-      case CODE_CAR:
-        {
-          pattern = Pattern.compile("[A-Z]([0-9]+)");
-          break; // .toMatchResult().map(MatchResult::group).findFirst().get().split("C")[1]; --for
-          // Java 9+
-        }
-      case NUMBER:
-        {
-          pattern =
-              Pattern.compile(
-                  "_([0-9])"); // .matcher(carInfo).results().map(MatchResult::group).findFirst().get().split("_")[1]; --for Java 9+
-          break;
-        }
-      case MILEAGE:
-        {
-          pattern = Pattern.compile("-([0-9]+)");
-          break;
-        }
-      case OTHER_PARAM:
-        {
-          pattern = Pattern.compile("-([0-9]+)$");
-          break; // .matcher(carInfo).results().map(MatchResult::group).findFirst().get().split("-")[1]; -- for Java 9+
-        }
-      default:
-        return errorMessage;
-    }
-
-    Matcher matcher = pattern.matcher(carInfo);
-    int matcherCount = 0;
-    if (!matcher.find()) {
-      return errorMessage;
-    } else {
-      while (attribute == ATTRIBUTE.OTHER_PARAM) {
-        if (matcherCount > 1) {
-          return matcher.group(1);
-        }
-        ++matcherCount;
-      }
-      return matcher.group(1);
-    }
-  }
-  /**
    * Вывод общей информации по расходам ГСМ на каждый вид авто. Вывод класса авто с минимальным и
    * максимальным расходом на ГСМ.
    *
    * @param arrCar входной массив значений со всеми авто
    */
-  private static void getInformationPOL(String[] arrCar) {
+  private static void getInformationPOL(List<Transport> arrCar) {
 
     /* Расходы ГСМ на каждую машину. Первый индекс - класс авто, второй индекс - номер машины*/
-    // TODO подумать, как адекватно задать размер массива
-    double[][] arrCarConsumption = new double[FUEL.values().length][arrCar.length];
+    Map<Integer,Double> arrCarConsumption = new HashMap<>();
 
     /* Общая стоимость расходов ГСМ*/
     double sumCostPOL = 0;
@@ -149,26 +66,27 @@ public class POL {
     double costCarType;
 
     /* Расходы ГСМ на каждый вид авто*/
-    double[] arrCostCarType = new double[FUEL.values().length];
-
+    //double[] arrCostCarType = new double[Fuel.values().length];
+    Map<Integer,Double> arrCostCarType = new HashMap<>();
     /* Мин. и макс. значение расхода ГСМ по классу авто */
     double minCarTypeCost, maxCarTypeCost;
+    
+    for (Transport car : arrCar) {
+        sumCostPOL += Fuel.valueOf("C"+car.getCodeCar()).getFuelConsumption() * car.getMileage();
+    }
 
     /* Расходы на ГСМ каждой машины */
-    for (String car : arrCar) {
-      arrCarConsumption[Byte.parseByte(getAttribute(ATTRIBUTE.CODE_CAR, car).substring(0, 1)) - 1][
-              Byte.parseByte(getAttribute(ATTRIBUTE.NUMBER, car)) - 1] +=
-          FUEL.valueOf("C" + getAttribute(ATTRIBUTE.CODE_CAR, car)).getFuelConsumption()
-              * Integer.parseInt(getAttribute(ATTRIBUTE.MILEAGE, car));
+    for (Transport car : arrCar) {
+      arrCarConsumption.put(car.getCodeCar(),Fuel.valueOf("C"+car.getCodeCar()).getFuelConsumption() * car.getMileage());
     }
     /* Расходы на ГСМ на каждый вид авто */
-    for (int carType = 0; carType < arrCarConsumption.length; carType++) {
+    for (int carType = 0; carType < arrCarConsumption.size(); carType++) {
       costCarType = 0;
-      for (double cost : arrCarConsumption[carType]) {
+      for (double cost : arrCarConsumption) {
         costCarType += cost;
       }
       sumCostPOL += costCarType;
-      arrCostCarType[carType] = costCarType;
+      arrCostCarType.put();
     }
     /* Находим мин. и макс. сумму трат на ГСМ среди авто */
     minCarTypeCost = arrCostCarType.length != 0 ? arrCostCarType[0] : 0;
