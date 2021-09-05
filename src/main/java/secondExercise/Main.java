@@ -1,5 +1,12 @@
 package secondExercise;
 
+import secondExercise.model.AbstractDocument;
+import secondExercise.model.Employee;
+import secondExercise.model.Letter;
+import secondExercise.model.Order;
+import secondExercise.model.type.OrderStatus;
+import secondExercise.model.type.OrderType;
+
 import java.util.ArrayList;
 
 public class Main {
@@ -12,45 +19,62 @@ public class Main {
 
     System.out.println("Создаем документы");
     Employee employee = new Employee("Ivan", "Ivanov", "Java Developer");
-    Document letterAccept =
-        new Letter("1", "Письмо о приеме на работу", "Company@company.com", "IvanIvanov@mail.com");
+    AbstractDocument letterAccept =
+        Letter.builder()
+            .number("1")
+            .title("Письмо о приеме на работу")
+            .author("Company@company.com")
+            .recipient("IvanIvanov@mail.com")
+            .build();
     // создаем документ о приеме на работу с автоматической генерацией номера документа
-    Document orderAccept =
-        new Order(
-            employee,
-            "Зачислить "
-                + employee.getName()
-                + " "
-                + employee.getLastName()
-                + " в штат компании на должность: "
-                + employee.getPosition(),
-            OrderType.ACCEPTANCE);
+    AbstractDocument orderAccept =
+        Order.builder()
+            .employee(employee)
+            .number("2")
+            .title("Приказ о приеме в штат")
+            .text(
+                "Зачислить "
+                    + employee.getName()
+                    + " "
+                    + employee.getLastName()
+                    + " в штат компании на должность: "
+                    + employee.getPosition())
+            .orderType(OrderType.ACCEPTANCE)
+            .build()
+            .toBuilder()
+            .build();
     // создаем документ об увольнении сотрудника с автоматической генерацией номера документа
-    Document orderDiss =
-        new Order(
-            employee,
-            "Уволить "
-                + employee.getName()
-                + " "
-                + employee.getLastName()
-                + " из штата компании с должности: "
-                + employee.getPosition(),
-            OrderType.DISMISSAL,
-            "По собственному желанию");
+    AbstractDocument orderDiss =
+        Order.builder()
+            .employee(employee)
+            .number("3")
+            .title("Приказ об увольнении")
+            .text(
+                "Уволить "
+                    + employee.getName()
+                    + " "
+                    + employee.getLastName()
+                    + " из штата компании с должности: "
+                    + employee.getPosition())
+            .orderType(OrderType.DISMISSAL)
+            .reason("По собственному желанию")
+            .build()
+            .toBuilder()
+            .build();
     // Коллекция для хранения документов
-    ArrayList<Document> documents = new ArrayList<>();
-    documents.add(letterAccept);
-    documents.add(orderAccept);
-    documents.add(orderDiss);
+    ArrayList<AbstractDocument> abstractDocuments = new ArrayList<>();
+    abstractDocuments.add(letterAccept);
+    abstractDocuments.add(orderAccept);
+    abstractDocuments.add(orderDiss);
 
     // Выводим информацию по документам и меняем статус у документов
-    for (Document doc : documents) {
+    for (AbstractDocument doc : abstractDocuments) {
       System.out.println(!isSimple ? doc : doc.printSimple());
-      if (doc instanceof Order) doc.setStatus(OrderStatus.EXECUTED);
+      doc.changeStatus(OrderStatus.EXECUTED);
     }
     System.out.println("_____________________________________________________________");
     // убеждаемся, что статус у документов изменился
-    for (Document doc : documents) {
+    for (AbstractDocument doc : abstractDocuments) {
       System.out.println(!isSimple ? doc : doc.printSimple());
     }
   }
