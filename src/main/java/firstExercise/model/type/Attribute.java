@@ -1,4 +1,4 @@
-package firstExercise;
+package firstExercise.model.type;
 
 /**
  * Список аттрибутов машины {@link #CODE_CAR} {@link #NUMBER} {@link #MILEAGE} {@link
