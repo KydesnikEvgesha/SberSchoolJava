@@ -12,12 +12,11 @@ public class LatinDictionary {
         scan.close();
 
         Map<Character, Integer> mapChar = new HashMap<>();
-        for(char symbol : inputString.toCharArray()){
-            if(isLatinChar(symbol)){
-                if(mapChar.containsKey(symbol)){
+        for (char symbol : inputString.toCharArray()) {
+            if (isLatinChar(symbol)) {
+                if (mapChar.containsKey(symbol)) {
                     mapChar.put(symbol, mapChar.get(symbol) + 1);
-                }
-                else{
+                } else {
                     mapChar.put(symbol, 1);
                 }
             }
@@ -26,7 +25,7 @@ public class LatinDictionary {
         mapChar.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEach(System.out::println);
     }
 
-    public static boolean isLatinChar(char symbol){
+    public static boolean isLatinChar(char symbol) {
         return ((int) symbol > 64 && (int) symbol < 91) || ((int) symbol > 96 && (int) symbol < 123);
     }
 }

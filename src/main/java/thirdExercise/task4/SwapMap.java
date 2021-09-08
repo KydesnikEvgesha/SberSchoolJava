@@ -5,13 +5,13 @@ import java.util.*;
 public class SwapMap {
     public static void main(String[] args) {
         Map<Integer, String> mapTest = new HashMap<>();
-        mapTest.put(1,"TEST1");
-        mapTest.put(2,"TEST2");
-        mapTest.put(3,"TEST1");
+        mapTest.put(1, "TEST1");
+        mapTest.put(2, "TEST2");
+        mapTest.put(3, "TEST1");
         System.out.println(swapMap(mapTest));
     }
 
-    public static <K,V> Map<V,Collection<K>> swapMap (Map<K,V> inputMap){
+    public static <K, V> Map<V, Collection<K>> swapMap(Map<K, V> inputMap) {
         //Создаем конечный map
         Map<V, Collection<K>> resultMap = new HashMap<>();
         //Объявляем коллекцию для хранения ключей исходной map

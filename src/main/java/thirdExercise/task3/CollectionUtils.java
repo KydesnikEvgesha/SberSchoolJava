@@ -25,7 +25,7 @@ public class CollectionUtils {
 
     }
 
-    public static <T>Collection<T> removeDuplicates (Collection<T> collection){
+    public static <T> Collection<T> removeDuplicates(Collection<T> collection) {
         //Создал предикат на проверку, что кол-во повторений элемента больше 1
         Predicate<T> checkDuplicate = itemCollection -> {
             long count = 0L;
