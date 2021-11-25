@@ -1,8 +1,11 @@
-package secondExercise;
+package secondExercise.model.type;
+
+import lombok.AllArgsConstructor;
 
 /**
  * Перечисление статусов {@link OrderStatus#CREATED Создан} {@link OrderStatus#EXECUTED Исполнен}
  */
+@AllArgsConstructor
 public enum OrderStatus implements Status {
 
   /** Создан */
@@ -14,9 +17,5 @@ public enum OrderStatus implements Status {
 
   public String getName() {
     return name;
-  }
-
-  OrderStatus(String name) {
-    this.name = name;
   }
 }

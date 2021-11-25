@@ -1,9 +1,12 @@
-package secondExercise;
+package secondExercise.model.type;
+
+import lombok.AllArgsConstructor;
 
 /**
  * Перечисление типа приказа {@link OrderType#ACCEPTANCE Прием} {@link OrderType#DISMISSAL
  * Увольнение}
  */
+@AllArgsConstructor
 public enum OrderType implements Status {
   /** Прием */
   ACCEPTANCE("ПРИЕМ"),
@@ -14,9 +17,5 @@ public enum OrderType implements Status {
 
   public String getName() {
     return name;
-  }
-
-  OrderType(String name) {
-    this.name = name;
   }
 }
